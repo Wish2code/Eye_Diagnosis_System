@@ -1,4 +1,4 @@
-# Medical Data Diagnosis Dashboard
+# Eye Diagnosis System
 
 This project is a web-based application designed for processing medical data and generating diagnoses based on patients' symptoms. It uses Flask as the backend framework to handle file uploads, data processing, and rendering results.
 
