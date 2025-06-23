@@ -1,0 +1,11 @@
+email,patient_email,symptoms,symptom1,symptom2,symptom3,affected_eye,eye,affected-eye,onset_date,onset,date
+john.doe@email.com,john.doe@email.com,"headache, Eye redness, irritation",headache,Eye redness,irritation,left,left,left,2024-01-15,2024-01-15,2024-01-15
+jane.smith@email.com,jane.smith@email.com,"Eye redness, sensation of a foreign object in the eye, excessive watery discharge",Eye redness,sensation of a foreign object in the eye,excessive watery discharge,right,right,right,2024-01-20,2024-01-20,2024-01-20
+mike.johnson@email.com,mike.johnson@email.com,"Persistent redness, irritation, history of previous episodes",Persistent redness,irritation,history of previous episodes,both,both,both,2024-01-10,2024-01-10,2024-01-10
+sarah.wilson@email.com,sarah.wilson@email.com,"Chronic redness, inflammation, discomfort",Chronic redness,inflammation,discomfort,left,left,left,2024-01-25,2024-01-25,2024-01-25
+david.brown@email.com,david.brown@email.com,"Eye redness, acute infection or irritation, prior recurrence",Eye redness,acute infection or irritation,prior recurrence,right,right,right,2024-01-30,2024-01-30,2024-01-30
+emma.davis@email.com,emma.davis@email.com,"Chronic inflammation, vision changes, discomfort",Chronic inflammation,vision changes,discomfort,both,both,both,2024-02-01,2024-02-01,2024-02-01
+chris.miller@email.com,chris.miller@email.com,"Severe pain, swelling, vision loss",Severe pain,swelling,vision loss,left,left,left,2024-02-05,2024-02-05,2024-02-05
+lisa.garcia@email.com,lisa.garcia@email.com,"Eye fatigue, dry eye, reduced vision",Eye fatigue,dry eye,reduced vision,right,right,right,2024-02-10,2024-02-10,2024-02-10
+tom.rodriguez@email.com,tom.rodriguez@email.com,"Acute pain, vision disturbances, swelling",Acute pain,vision disturbances,swelling,both,both,both,2024-02-15,2024-02-15,2024-02-15
+anna.martinez@email.com,anna.martinez@email.com,"General eye discomfort, blurriness, irritation",General eye discomfort,blurriness,irritation,left,left,left,2024-02-20,2024-02-20,2024-02-20 
