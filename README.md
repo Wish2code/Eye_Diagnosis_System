@@ -165,4 +165,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-For support or questions, please open an issue in the repository or contact the development team.
+For support or questions, please open an issue in the repository.
