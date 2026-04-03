@@ -7,7 +7,6 @@ import json
 from tabulate import tabulate
 import logging
 from datetime import datetime
-import shutil
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -354,50 +353,6 @@ def download_results():
         return send_file(results_file, as_attachment=True, download_name=f"diagnosis_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
     except FileNotFoundError:
         flash("No results file found.", 'error')
-        return redirect(url_for('index'))
-
-@app.route('/use_sample_data', methods=['POST'])
-def use_sample_data():
-    try:
-        sample_file = "sample_patient_data.csv"
-        target_file = os.path.join(app.config['UPLOAD_FOLDER'], "patient_data.csv")
-
-        # Make sure uploads folder exists
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-        # Copy the bundled sample CSV into the uploads folder
-        shutil.copyfile(sample_file, target_file)
-
-        flash("Sample patient data loaded successfully. You can now click 'Process Data and Generate Results'.", 'success')
-    except FileNotFoundError:
-        flash("Sample patient data file not found on the server.", 'error')
-    except Exception as e:
-        logger.error(f"Error loading sample data: {e}")
-        flash(f"An error occurred while loading sample data: {str(e)}", 'error')
-
-    return redirect(url_for('index'))
-
-@app.route('/patient_data')
-def patient_data():
-    try:
-        patient_data_file = os.path.join(app.config['UPLOAD_FOLDER'], "patient_data.csv")
-        if not os.path.exists(patient_data_file):
-            flash("No patient data found. Upload a CSV or use the sample data first.", 'info')
-            return redirect(url_for('index'))
-
-        with open(patient_data_file, mode='r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            rows = list(reader)
-            if not rows:
-                flash("Patient data file is empty.", 'info')
-                return redirect(url_for('index'))
-
-            headers = reader.fieldnames or rows[0].keys()
-
-        return render_template('patient_data.html', headers=headers, rows=rows)
-    except Exception as e:
-        logger.error(f"Error reading patient data: {e}")
-        flash(f"An error occurred while reading patient data: {str(e)}", 'error')
         return redirect(url_for('index'))
 
 if __name__ == '__main__':
