@@ -464,5 +464,50 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chatbot Widget (disabled until a diagnosis has been run) -->
+    <style>
+        .chatbot-widget-disabled {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+        .chatbot-toggle-btn-disabled {
+            width: 56px;
+            height: 56px;
+            background: #B0C4DE;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: not-allowed;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chatbot-tooltip-label {
+            position: absolute;
+            bottom: 66px;
+            right: 0;
+            background: rgba(30,30,30,0.85);
+            color: white;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .chatbot-widget-disabled:hover .chatbot-tooltip-label { opacity: 1; }
+    </style>
+    <div class="chatbot-widget-disabled" role="complementary" aria-label="AI Assistant unavailable">
+        <span class="chatbot-tooltip-label"><i class="fas fa-lock" style="margin-right:4px;"></i>Run a diagnosis first</span>
+        <button class="chatbot-toggle-btn-disabled" disabled aria-disabled="true" title="Run a diagnosis first to use the AI assistant">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
 </body>
 </html>
