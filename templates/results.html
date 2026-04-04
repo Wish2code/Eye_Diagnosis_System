@@ -449,7 +449,7 @@
         .typing-dot {
             width: 6px;
             height: 6px;
-            background: #9AA;
+            background: #99AAAA;
             border-radius: 50%;
             animation: typingPulse 1.3s infinite;
         }
@@ -878,7 +878,7 @@
                 } else {
                     appendMessage(escapeHTML(data.response), 'bot');
                 }
-            } catch (_) {
+            } catch (err) {
                 removeTyping();
                 appendMessage('<span style="color:#c0392b">⚠ Connection error. Please try again.</span>', 'bot');
             } finally {
@@ -909,7 +909,7 @@
                     appendMessage(escapeHTML(data.response), 'bot');
                     showAIInsights(data.response);
                 }
-            } catch (_) {
+            } catch (err) {
                 removeTyping();
                 appendMessage('<span style="color:#c0392b">⚠ Connection error. Please try again.</span>', 'bot');
                 document.getElementById('ai-insights-section').style.display = 'none';

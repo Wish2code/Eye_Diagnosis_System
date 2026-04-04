@@ -1,4 +1,4 @@
-# app.py
+# Diagnosis.py
 from flask import Flask, render_template, request, flash, redirect, url_for, send_file, jsonify
 import os
 from werkzeug.utils import secure_filename
@@ -512,7 +512,8 @@ def chat():
 
     response, error = _generate_ai_response(prompt)
     if error:
-        return jsonify({'error': f'AI model error: {error}'}), 500
+        logger.error("AI model error in /chat: %s", error)
+        return jsonify({'error': 'AI model is unavailable. Please ensure transformers, torch, and sentencepiece are installed.'}), 500
 
     return jsonify({'response': response})
 

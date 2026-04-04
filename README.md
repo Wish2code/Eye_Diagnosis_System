@@ -8,7 +8,7 @@ A comprehensive web-based system for automated eye condition diagnosis using pat
 - **Advanced Symptom Matching**: Intelligent algorithm that matches patient symptoms to medical conditions using Jaccard similarity
 - **ICD/CPT Code Generation**: Automatically generates appropriate medical codes for diagnoses
 - **Comprehensive Results**: Detailed diagnosis reports with prescriptions, severity levels, and treatment recommendations
-- **AI Chatbot Assistant**: Floating chatbot (bottom-right) that summarises results and answers questions using a local `google/flan-t5-small` model — **no API key required**
+- **AI Chatbot Assistant**: Floating chatbot (bottom-right) that summarizes results and answers questions using a local `google/flan-t5-small` model — **no API key required**
 - **AI Insights Card**: After generating a summary, the AI response is also shown in a dedicated card on the results page for easy reading
 - **Modern UI**: Beautiful, responsive web interface with real-time statistics
 - **Data Export**: Download results in CSV format for further analysis
