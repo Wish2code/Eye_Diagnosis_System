@@ -345,6 +345,23 @@ def view_results():
         flash(f"An error occurred while reading results: {str(e)}", 'error')
         return redirect(url_for('index'))
 
+@app.route('/use_sample', methods=['POST'])
+def use_sample():
+    """Copy the built-in sample CSV to uploads so users can test without their own file."""
+    import shutil
+    sample_file = 'sample_patient_data.csv'
+    dest_file = os.path.join(app.config['UPLOAD_FOLDER'], 'patient_data.csv')
+    try:
+        shutil.copy(sample_file, dest_file)
+        data = read_csv(dest_file)
+        flash(f'Sample data loaded successfully with {len(data)} patient records. Click "Run Diagnosis" to continue.', 'success')
+    except FileNotFoundError:
+        flash('Sample data file not found on the server.', 'error')
+    except Exception as e:
+        logger.error(f"Error loading sample data: {e}")
+        flash(f'Error loading sample data: {str(e)}', 'error')
+    return redirect(url_for('index'))
+
 @app.route('/download_results')
 def download_results():
     """Download results as CSV file."""
