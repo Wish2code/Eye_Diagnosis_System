@@ -1,79 +1,395 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eye Diagnosis System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .card {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: none;
-            border-radius: 10px;
+        :root {
+            --blue: #0071E3;
+            --blue-dark: #0062C6;
+            --green: #34C759;
+            --green-dark: #2AAE4D;
+            --bg: #F5F5F7;
+            --surface: #FFFFFF;
+            --text: #1D1D1F;
+            --text-secondary: #6E6E73;
+            --border: #D2D2D7;
+            --divider: #E8E8ED;
+            --radius-card: 14px;
+            --radius-btn: 980px;
+            --shadow: 0 2px 16px rgba(0,0,0,0.08);
         }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: var(--surface);
+            border-bottom: 1px solid var(--divider);
+            text-align: center;
+            padding: 48px 24px 36px;
+        }
+        .hero-icon {
+            width: 76px;
+            height: 76px;
+            background: linear-gradient(145deg, #0071E3 0%, #34AADC 100%);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border-radius: 10px 10px 0 0 !important;
+            font-size: 34px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 24px rgba(0, 113, 227, 0.28);
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            color: var(--text);
+            margin: 0 0 10px;
+        }
+        .hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 460px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* ── Layout ── */
+        .page-body {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 44px 20px 0;
+        }
+
+        /* ── Sample banner ── */
+        .sample-banner {
+            background: linear-gradient(135deg, #EBF4FF 0%, #F0FAFF 100%);
+            border: 1px solid rgba(0, 113, 227, 0.18);
+            border-radius: var(--radius-card);
+            padding: 28px 32px;
+            margin-bottom: 44px;
+        }
+        .sample-banner-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 6px;
+        }
+        .sample-banner h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 4px;
+        }
+        .sample-banner p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .btn-sample {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--blue);
+            color: white;
             border: none;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            border: none;
-        }
-        .alert {
             border-radius: 10px;
+            padding: 13px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.18s, box-shadow 0.18s;
+        }
+        .btn-sample:hover {
+            background: var(--blue-dark);
+            color: white;
+            box-shadow: 0 4px 14px rgba(0, 113, 227, 0.3);
+        }
+        .btn-sample-sub {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.85;
+            display: block;
+            line-height: 1;
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--divider);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+        }
+        .card-inner {
+            padding: 28px;
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .step-badge {
+            width: 30px;
+            height: 30px;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+        .step-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* ── Buttons ── */
+        .btn-primary-apple {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: var(--blue);
+            color: white;
             border: none;
+            border-radius: var(--radius-btn);
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s;
+            width: 100%;
+        }
+        .btn-primary-apple:hover { background: var(--blue-dark); color: white; }
+
+        .btn-outline-apple {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: transparent;
+            color: var(--blue);
+            border: 1.5px solid var(--blue);
+            border-radius: var(--radius-btn);
+            padding: 9px 22px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.18s;
+            width: 100%;
+        }
+        .btn-outline-apple:hover { background: var(--blue); color: white; }
+
+        .btn-green-apple {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: var(--radius-btn);
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s;
+            width: 100%;
+        }
+        .btn-green-apple:hover { background: var(--green-dark); color: white; }
+
+        /* ── Form ── */
+        .form-control {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 15px;
+            color: var(--text);
+            background: var(--surface);
+            transition: border-color 0.18s, box-shadow 0.18s;
+        }
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.12);
+            outline: none;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .form-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin-top: 8px;
+        }
+        code {
+            background: var(--bg);
+            color: #D44;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* ── Alerts ── */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            padding: 14px 18px;
+        }
+        .alert-success { background: #F0FBF3; color: #1A6B35; }
+        .alert-danger  { background: #FFF2F2; color: #B92C2C; }
+        .alert-info    { background: #EBF4FF; color: #0A4D8C; }
+
+        /* ── Footer info ── */
+        .info-section {
+            background: var(--surface);
+            border-top: 1px solid var(--divider);
+            margin-top: 56px;
+            padding: 44px 20px;
+        }
+        .info-item { text-align: center; }
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            background: #EBF4FF;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue);
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+        .info-item h6 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .info-item p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
         }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="text-center mb-5">
-            <h1 class="display-4 text-primary">
-                <i class="fas fa-eye"></i> Eye Diagnosis System
-            </h1>
-            <p class="lead text-muted">Upload patient data and generate automated eye diagnoses</p>
+<body>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-icon">
+            <i class="fas fa-eye"></i>
         </div>
-        
+        <h1>Eye Diagnosis System</h1>
+        <p>Upload patient data and generate automated eye diagnoses with ICD/CPT codes.</p>
+    </header>
+
+    <main class="page-body">
+
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }}"></i>
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }} me-2"></i>
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3><i class="fas fa-upload"></i> Upload Patient Data</h3>
-                    </div>
-                    <div class="card-body">
+        <!-- Sample CSV banner -->
+        <div class="sample-banner">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                    <p class="sample-banner-label">Quick Start</p>
+                    <h5>Try the app with sample data</h5>
+                    <p>New here? Load the built-in sample patient dataset and explore the full workflow — no file required.</p>
+                </div>
+                <form action="{{ url_for('use_sample') }}" method="post" style="flex-shrink:0;">
+                    <button type="submit" class="btn-sample">
+                        <i class="fas fa-file-csv"></i>
+                        <span>
+                            Upload Sample CSV
+                            <span class="btn-sample-sub">for testing</span>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Workflow -->
+        <p class="section-label">Workflow</p>
+        <div class="row g-4 mb-5">
+
+            <!-- Step 1 -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-inner">
+                        <div class="step-header">
+                            <span class="step-badge">1</span>
+                            <h2 class="step-title">Upload Data</h2>
+                        </div>
+                        <p class="step-desc">Choose a patient CSV file from your computer to begin the diagnosis workflow.</p>
                         <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="file_type" value="vitals">
                             <div class="mb-3">
-                                <input type="hidden" name="file_type" value="vitals">
-                                <label for="file" class="form-label">
-                                    <i class="fas fa-file-csv"></i> Choose Patient Data CSV file:
-                                </label>
+                                <label for="file" class="form-label">Patient Data CSV</label>
                                 <input type="file" class="form-control" name="file" id="file" accept=".csv" required>
                                 <div class="form-text">
-                                    <strong>Expected CSV columns:</strong><br>
-                                    • <code>email</code> or <code>patient_email</code> - Patient email<br>
-                                    • <code>symptoms</code> or <code>symptom1, symptom2, symptom3</code> - Patient symptoms<br>
-                                    • <code>affected_eye</code> or <code>eye</code> - Affected eye (left/right/both)<br>
-                                    • <code>onset_date</code> or <code>onset</code> - Date of onset
+                                    Required columns: <code>email</code>, <code>symptoms</code>, <code>affected_eye</code>, <code>onset_date</code>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn-primary-apple">
                                 <i class="fas fa-upload"></i> Upload CSV File
                             </button>
                         </form>
@@ -81,71 +397,72 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3><i class="fas fa-cogs"></i> Process Data</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3">
-                            Generate automated eye diagnoses based on uploaded patient data using our ICD/CPT code database.
-                        </p>
+            <!-- Step 2 -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-inner">
+                        <div class="step-header">
+                            <span class="step-badge">2</span>
+                            <h2 class="step-title">Process Data</h2>
+                        </div>
+                        <p class="step-desc">Run the AI diagnosis engine on the uploaded data to match symptoms against the ICD/CPT code database.</p>
                         <form action="{{ url_for('process_data') }}" method="post">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-play"></i> Process Data and Generate Results
+                            <button type="submit" class="btn-green-apple">
+                                <i class="fas fa-play"></i> Run Diagnosis
                             </button>
                         </form>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-bar"></i> View Results</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3">
-                            View and download diagnosis results with detailed patient information.
-                        </p>
-                        <a href="{{ url_for('view_results') }}" class="btn btn-info">
-                            <i class="fas fa-eye"></i> View Results
-                        </a>
-                        <a href="{{ url_for('download_results') }}" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download Results
-                        </a>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-info-circle"></i> System Information</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h5><i class="fas fa-database"></i> ICD/CPT Database</h5>
-                                <p class="text-muted">Comprehensive database of eye conditions with corresponding ICD and CPT codes.</p>
-                            </div>
-                            <div class="col-md-4">
-                                <h5><i class="fas fa-brain"></i> AI Diagnosis</h5>
-                                <p class="text-muted">Advanced symptom matching algorithm for accurate eye condition diagnosis.</p>
-                            </div>
-                            <div class="col-md-4">
-                                <h5><i class="fas fa-shield-alt"></i> Data Security</h5>
-                                <p class="text-muted">Secure file handling with validation and error checking for patient data.</p>
-                            </div>
+            <!-- Step 3 -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-inner">
+                        <div class="step-header">
+                            <span class="step-badge">3</span>
+                            <h2 class="step-title">View Results</h2>
+                        </div>
+                        <p class="step-desc">Explore detailed diagnosis results including ICD/CPT codes, severity ratings, and prescriptions.</p>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ url_for('view_results') }}" class="btn-primary-apple">
+                                <i class="fas fa-eye"></i> View Results
+                            </a>
+                            <a href="{{ url_for('download_results') }}" class="btn-outline-apple">
+                                <i class="fas fa-download"></i> Download CSV
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
-    </div>
+    </main>
+
+    <!-- Info footer -->
+    <section class="info-section">
+        <div style="max-width:880px; margin:0 auto;">
+            <p class="section-label text-center">About the System</p>
+            <div class="row g-4">
+                <div class="col-md-4 info-item">
+                    <div class="info-icon"><i class="fas fa-database"></i></div>
+                    <h6>ICD/CPT Database</h6>
+                    <p>Comprehensive database of eye conditions with corresponding ICD and CPT codes.</p>
+                </div>
+                <div class="col-md-4 info-item">
+                    <div class="info-icon"><i class="fas fa-brain"></i></div>
+                    <h6>AI Diagnosis</h6>
+                    <p>Advanced symptom matching algorithm for accurate eye condition diagnosis.</p>
+                </div>
+                <div class="col-md-4 info-item">
+                    <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h6>Data Security</h6>
+                    <p>Secure file handling with validation and error checking for patient data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-<!-- templates/results.html stays the same as before -->
