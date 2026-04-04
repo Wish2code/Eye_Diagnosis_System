@@ -304,6 +304,7 @@
             font-size: 14px;
             color: var(--text);
             line-height: 1.65;
+            white-space: pre-line;
         }
         /* skeleton loader for AI insights */
         .ai-skeleton {
@@ -425,6 +426,7 @@
             border-radius: 14px;
             font-size: 13px;
             line-height: 1.5;
+            white-space: pre-line;
         }
         .bot-message  .message-bubble {
             background: #F0F4FA;
@@ -869,7 +871,7 @@
                 const res  = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg })
+                    body: JSON.stringify({ message: msg, context: 'results' })
                 });
                 const data = await res.json();
                 removeTyping();
@@ -898,7 +900,7 @@
                 const res  = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: 'summarize' })
+                    body: JSON.stringify({ message: 'summarize', context: 'results' })
                 });
                 const data = await res.json();
                 removeTyping();

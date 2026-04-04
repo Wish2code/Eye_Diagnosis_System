@@ -66,14 +66,15 @@ python Diagnosis.py
    - View detailed results with statistics and charts
    - Download results as CSV for further analysis
 
-6. **Use the AI chatbot** (available on the Results page):
-   - Click the **robot icon** (bottom-right corner) to open the chatbot panel
-   - Click **Generate AI Summary** to receive an AI-generated overview of the diagnosis results — a loading indicator is shown while the model processes your request
+6. **Use the AI chatbot**:
+   - On the **Dashboard** (home page), click the robot icon to ask general questions about workflow, CSV format, and app usage
+   - After diagnosis is complete, use the **Results** page chatbot for dataset-specific questions
+   - Click **Generate AI Summary** on Results to receive a structured analysis with key findings and risk highlights
    - The summary also appears in the **AI Insights** card at the top of the results page for easy reading
-   - Type any follow-up question in the text box (e.g. "How many high-severity patients?") and press Enter or click Send
+   - Type follow-up questions in the text box (e.g. "How many high-severity patients?") and press Enter or click Send
    - The chatbot uses `google/flan-t5-small`, which is downloaded automatically on first use (~300 MB) and cached locally; no internet connection or API key is needed for subsequent requests
 
-> **Note:** The AI chatbot button on the Dashboard (home page) is intentionally disabled until a diagnosis has been run.
+> **Note:** AI summary generation is intentionally restricted to post-diagnosis context on the Results page.
 
 ## AI Chatbot Details
 
@@ -147,8 +148,8 @@ Eye_Diagnosis_System/
 ├── requirements.txt             # Python dependencies
 ├── README.md                    # This file
 ├── templates/                   # HTML templates
-│   ├── index.html              # Main dashboard (chatbot disabled)
-│   └── results.html            # Results display + AI chatbot widget
+│   ├── index.html              # Main dashboard + general chatbot guidance
+│   └── results.html            # Results display + data-aware AI chatbot widget
 └── uploads/                    # Uploaded files and results
     └── diagnosis_results.csv   # Generated results
 ```
