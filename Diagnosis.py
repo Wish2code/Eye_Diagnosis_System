@@ -1,9 +1,10 @@
 # app.py
-from flask import Flask, render_template, request, flash, redirect, url_for, send_file
+from flask import Flask, render_template, request, flash, redirect, url_for, send_file, jsonify
 import os
 from werkzeug.utils import secure_filename
 import csv
 import json
+import threading
 from tabulate import tabulate
 import logging
 from datetime import datetime
@@ -21,6 +22,99 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# ── AI chatbot model (lazy-loaded on first request) ──────────────────────────
+_ai_model = None
+_ai_tokenizer = None
+_ai_model_lock = threading.Lock()
+
+
+def _load_ai_model():
+    """Lazily load and cache the Flan-T5-Small model. Thread-safe."""
+    global _ai_model, _ai_tokenizer
+    if _ai_model is not None:
+        return True, None
+    try:
+        from transformers import T5ForConditionalGeneration, AutoTokenizer
+        model_name = 'google/flan-t5-small'
+        logger.info("Loading AI model: %s (first request only)", model_name)
+        _ai_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        _ai_model = T5ForConditionalGeneration.from_pretrained(model_name)
+        _ai_model.eval()
+        logger.info("AI model loaded successfully")
+        return True, None
+    except ImportError as exc:
+        msg = (
+            f"Required packages missing: {exc}. "
+            "Install with: pip install transformers torch sentencepiece"
+        )
+        logger.error(msg)
+        return False, msg
+    except Exception as exc:
+        logger.error("Failed to load AI model: %s", exc)
+        return False, str(exc)
+
+
+def _build_results_context(results):
+    """Build a concise text context from diagnosis results for the AI prompt."""
+    if not results:
+        return ""
+    total = len(results)
+    diagnoses = {}
+    severities = {}
+    prescriptions = set()
+    sev_labels = {'10245': 'High', '10246': 'Medium', '10247': 'Low'}
+
+    for r in results:
+        diag = r.get('diagnosis', 'Unknown')
+        sev = r.get('Severity', r.get('severity', 'Unknown'))
+        pres = r.get('prescription', '')
+        diagnoses[diag] = diagnoses.get(diag, 0) + 1
+        severities[sev] = severities.get(sev, 0) + 1
+        if pres and pres not in ('Unknown', ''):
+            prescriptions.add(pres)
+
+    diag_text = '; '.join(
+        f"{k} ({v} patient{'s' if v > 1 else ''})" for k, v in diagnoses.items()
+    )
+    sev_text = '; '.join(
+        f"{sev_labels.get(k, k)}: {v}" for k, v in severities.items()
+    )
+    pres_text = '; '.join(list(prescriptions)[:5]) if prescriptions else 'None'
+
+    return (
+        f"Total patients analyzed: {total}. "
+        f"Diagnoses: {diag_text}. "
+        f"Severity distribution: {sev_text}. "
+        f"Prescriptions given: {pres_text}."
+    )
+
+
+def _generate_ai_response(prompt):
+    """Generate a response from the local Flan-T5-Small model."""
+    with _ai_model_lock:
+        success, error = _load_ai_model()
+        if not success:
+            return None, error
+
+    try:
+        import torch
+        inputs = _ai_tokenizer(
+            prompt, return_tensors='pt', max_length=512, truncation=True
+        )
+        with torch.no_grad():
+            outputs = _ai_model.generate(
+                **inputs,
+                max_new_tokens=200,
+                num_beams=4,
+                no_repeat_ngram_size=3,
+                early_stopping=True,
+            )
+        response = _ai_tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return response.strip(), None
+    except Exception as exc:
+        logger.error("AI generation error: %s", exc)
+        return None, str(exc)
 
 def allowed_file(filename):
     if not filename:
@@ -371,6 +465,56 @@ def download_results():
     except FileNotFoundError:
         flash("No results file found.", 'error')
         return redirect(url_for('index'))
+
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    """Handle chatbot messages and return AI-generated responses as JSON."""
+    data = request.get_json(silent=True)
+    if not data or not data.get('message', '').strip():
+        return jsonify({'error': 'No message provided'}), 400
+
+    user_message = data['message'].strip()
+
+    # Load the most recent diagnosis results
+    results_file = os.path.join(app.config['UPLOAD_FOLDER'], "diagnosis_results.csv")
+    try:
+        with open(results_file, mode='r', encoding='utf-8') as f:
+            results = list(csv.DictReader(f))
+    except FileNotFoundError:
+        return jsonify({
+            'response': 'No diagnosis results found. Please run a diagnosis first.'
+        })
+
+    if not results:
+        return jsonify({
+            'response': 'No diagnosis results available. Please process patient data first.'
+        })
+
+    context = _build_results_context(results)
+    lower_msg = user_message.lower()
+
+    if any(w in lower_msg for w in ('summarize', 'summary', 'overview', 'report', 'brief')):
+        prompt = (
+            "You are a professional medical assistant. "
+            "Write a concise clinical summary of the following eye diagnosis results. "
+            "Include key findings, most common conditions, and severity overview. "
+            f"Data: {context} "
+            "Summary:"
+        )
+    else:
+        prompt = (
+            "You are a professional medical assistant analyzing eye diagnosis results. "
+            f"Data: {context} "
+            f"Question: {user_message} "
+            "Answer:"
+        )
+
+    response, error = _generate_ai_response(prompt)
+    if error:
+        return jsonify({'error': f'AI model error: {error}'}), 500
+
+    return jsonify({'response': response})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
