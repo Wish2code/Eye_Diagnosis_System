@@ -2,6 +2,10 @@
 
 A comprehensive web-based system for automated eye condition diagnosis using patient symptom data and ICD/CPT medical coding standards — now with an AI-powered chatbot assistant.
 
+## Live Demo
+
+The project is deployed on Render and can be accessed here: https://eye-diagnosis-system.onrender.com/
+
 ## Features
 
 - **CSV File Upload**: Upload patient data in CSV format for batch processing
@@ -195,7 +199,7 @@ The system includes comprehensive error handling:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ## Support
 
