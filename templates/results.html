@@ -1,63 +1,547 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnosis Results - Eye Diagnosis System</title>
+    <title>Diagnosis Results — Eye Diagnosis System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .card {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: none;
-            border-radius: 10px;
+        :root {
+            --blue: #0071E3;
+            --blue-dark: #0062C6;
+            --bg: #F5F5F7;
+            --surface: #FFFFFF;
+            --text: #1D1D1F;
+            --text-secondary: #6E6E73;
+            --border: #D2D2D7;
+            --divider: #E8E8ED;
+            --radius-card: 14px;
+            --radius-btn: 980px;
+            --shadow: 0 2px 16px rgba(0,0,0,0.08);
         }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        /* ── Header ── */
+        .page-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--divider);
+            padding: 20px 0;
+        }
+        .page-header-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .page-header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header-logo .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(145deg, #0071E3 0%, #34AADC 100%);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border-radius: 10px 10px 0 0 !important;
+            font-size: 16px;
+            box-shadow: 0 3px 10px rgba(0, 113, 227, 0.25);
+            flex-shrink: 0;
         }
+        .page-header-logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+        /* ── Buttons ── */
+        .btn-outline-apple {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            color: var(--blue);
+            border: 1.5px solid var(--blue);
+            border-radius: var(--radius-btn);
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+        .btn-outline-apple:hover { background: var(--blue); color: white; }
+
+        .btn-primary-apple {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-btn);
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s;
+        }
+        .btn-primary-apple:hover { background: var(--blue-dark); color: white; }
+
+        /* ── Page body ── */
+        .page-body {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
+        /* ── Alerts ── */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            padding: 14px 18px;
+        }
+        .alert-success { background: #F0FBF3; color: #1A6B35; }
+        .alert-danger  { background: #FFF2F2; color: #B92C2C; }
+        .alert-info    { background: #EBF4FF; color: #0A4D8C; }
+
+        /* ── Stat cards ── */
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--divider);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            text-align: center;
+        }
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            background: #EBF4FF;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--divider);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+        }
+        .card-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--divider);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .card-head h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+        .card-body-inner {
+            padding: 0 8px 8px;
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* ── Table ── */
         .table {
-            border-radius: 10px;
-            overflow: hidden;
+            font-size: 13px;
+            margin: 0;
         }
         .table thead th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--divider);
+            background: var(--surface);
+            padding: 12px 16px;
+            white-space: nowrap;
         }
-        .stat-card {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            border-radius: 10px;
-            padding: 20px;
+        .table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--divider);
+            vertical-align: middle;
+            color: var(--text);
+        }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover td { background: #FAFAFA; }
+
+        code {
+            background: var(--bg);
+            color: #D44;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* ── Badges ── */
+        .badge-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 980px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-blue  { background: #EBF4FF; color: #0071E3; }
+        .badge-teal  { background: #E6F9F1; color: #1A7A50; }
+        .badge-high   { background: #FFF0F0; color: #C0392B; }
+        .badge-medium { background: #FFF8E6; color: #8A6000; }
+        .badge-low    { background: #F0FBF3; color: #1A6B35; }
+        .badge-active   { background: #E6F9F1; color: #1A7A50; }
+        .badge-inactive { background: #F5F5F7; color: #6E6E73; }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-state i {
+            font-size: 40px;
+            color: var(--border);
+            margin-bottom: 16px;
+        }
+        .empty-state h5 {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-secondary);
             margin-bottom: 20px;
         }
-        .diagnosis-badge {
-            font-size: 0.8em;
-            padding: 5px 10px;
+
+        /* ── AI Insights card ── */
+        .ai-insights-card {
+            background: linear-gradient(135deg, #EBF4FF 0%, #F0FAFF 100%);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            border-radius: var(--radius-card);
+            padding: 24px 28px;
+            animation: fadeIn 0.4s ease;
         }
-        .severity-high { background-color: #dc3545; color: white; }
-        .severity-medium { background-color: #ffc107; color: black; }
-        .severity-low { background-color: #28a745; color: white; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ai-insights-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .ai-insights-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .ai-insights-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            margin: 0;
+        }
+        .ai-insights-body {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.65;
+            white-space: pre-line;
+        }
+        /* skeleton loader for AI insights */
+        .ai-skeleton {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .ai-skeleton-line {
+            height: 14px;
+            background: linear-gradient(90deg, #d0e4fa 25%, #e8f2ff 50%, #d0e4fa 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            animation: shimmer 1.4s infinite;
+        }
+        .ai-skeleton-line:nth-child(1) { width: 92%; }
+        .ai-skeleton-line:nth-child(2) { width: 80%; }
+        .ai-skeleton-line:nth-child(3) { width: 87%; }
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ── Chatbot widget ── */
+        .chatbot-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .chatbot-toggle-btn {
+            width: 56px;
+            height: 56px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 113, 227, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
+        }
+        .chatbot-toggle-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(0, 113, 227, 0.5);
+        }
+        .chatbot-panel {
+            width: 360px;
+            height: 490px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.16);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: chatSlideUp 0.25s ease;
+        }
+        @keyframes chatSlideUp {
+            from { opacity: 0; transform: translateY(16px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .chatbot-header {
+            background: var(--blue);
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .chatbot-header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chatbot-avatar {
+            width: 34px;
+            height: 34px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+        .chatbot-name  { font-size: 14px; font-weight: 600; }
+        .chatbot-status { font-size: 11px; opacity: 0.8; }
+        .chatbot-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .chatbot-close-btn:hover { background: rgba(255,255,255,0.2); }
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chatbot-message { display: flex; }
+        .bot-message  { align-self: flex-start; max-width: 90%; }
+        .user-message { align-self: flex-end;  max-width: 80%; flex-direction: row-reverse; }
+        .message-bubble {
+            padding: 9px 13px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        .bot-message  .message-bubble {
+            background: #F0F4FA;
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+        .user-message .message-bubble {
+            background: var(--blue);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 11px 15px;
+            background: #F0F4FA;
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #99AAAA;
+            border-radius: 50%;
+            animation: typingPulse 1.3s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingPulse {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-4px); }
+        }
+        .chatbot-footer {
+            border-top: 1px solid var(--divider);
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .chatbot-summary-btn {
+            background: linear-gradient(135deg, #EBF4FF, #F0FAFF);
+            border: 1px solid rgba(0, 113, 227, 0.22);
+            color: var(--blue);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.18s;
+            width: 100%;
+        }
+        .chatbot-summary-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+        .chatbot-summary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .chatbot-input-area { display: flex; gap: 8px; }
+        .chatbot-input {
+            flex: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.18s;
+            font-family: inherit;
+        }
+        .chatbot-input:focus { border-color: var(--blue); }
+        .chatbot-send-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: background 0.18s;
+            flex-shrink: 0;
+        }
+        .chatbot-send-btn:hover { background: var(--blue-dark); }
+        .chatbot-send-btn:disabled,
+        .chatbot-input:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-primary">
-                <i class="fas fa-chart-line"></i> Diagnosis Results
-            </h1>
-            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+<body>
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-logo">
+                <div class="logo-icon"><i class="fas fa-eye"></i></div>
+                <h1>Eye Diagnosis System</h1>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn-outline-apple">
+                <i class="fas fa-arrow-left"></i> Dashboard
             </a>
         </div>
+    </header>
 
+    <div class="page-body">
+
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }}"></i>
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }} me-2"></i>
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -65,130 +549,144 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <h3><i class="fas fa-users"></i></h3>
-                    <h4>{{ total_patients }}</h4>
-                    <p class="mb-0">Total Patients</p>
+        <!-- Stats -->
+        <p class="section-label">Summary</p>
+        <div class="row g-3 mb-5">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value">{{ total_patients }}</div>
+                    <div class="stat-label">Total Patients</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <h3><i class="fas fa-stethoscope"></i></h3>
-                    <h4>{{ diagnoses|length }}</h4>
-                    <p class="mb-0">Unique Diagnoses</p>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-stethoscope"></i></div>
+                    <div class="stat-value">{{ diagnoses|length }}</div>
+                    <div class="stat-label">Unique Diagnoses</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <h3><i class="fas fa-exclamation-triangle"></i></h3>
-                    <h4>{{ severity_counts.get('10245', 0) + severity_counts.get('10246', 0) }}</h4>
-                    <p class="mb-0">High/Medium Severity</p>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-value">{{ severity_counts.get('10245', 0) + severity_counts.get('10246', 0) }}</div>
+                    <div class="stat-label">High / Medium Severity</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <h3><i class="fas fa-clock"></i></h3>
-                    <h4>{{ results[0].processed_at if results else 'N/A' }}</h4>
-                    <p class="mb-0">Last Processed</p>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-value" style="font-size:16px; letter-spacing:0;">{{ results[0].processed_at if results else '—' }}</div>
+                    <div class="stat-label">Last Processed</div>
                 </div>
             </div>
         </div>
 
-        <!-- Diagnosis Distribution -->
-        <div class="row mb-4">
+        <!-- Distribution tables -->
+        <div class="row g-4 mb-5">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-pie-chart"></i> Diagnosis Distribution</h4>
+                    <div class="card-head">
+                        <h2><i class="fas fa-chart-pie me-2" style="color:var(--blue);"></i>Diagnosis Distribution</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body-inner">
                         {% if diagnoses %}
                             <div class="table-responsive">
-                                <table class="table table-sm">
+                                <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Diagnosis</th>
-                                            <th>Count</th>
-                                            <th>Percentage</th>
+                                            <th style="text-align:right;">Count</th>
+                                            <th style="text-align:right;">Share</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for diagnosis, count in diagnoses.items() %}
                                         <tr>
                                             <td>{{ diagnosis }}</td>
-                                            <td>{{ count }}</td>
-                                            <td>{{ "%.1f"|format(count / total_patients * 100) }}%</td>
+                                            <td style="text-align:right;">{{ count }}</td>
+                                            <td style="text-align:right; color:var(--text-secondary);">{{ "%.1f"|format(count / total_patients * 100) }}%</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
                         {% else %}
-                            <p class="text-muted">No diagnosis data available.</p>
+                            <p style="padding:24px; color:var(--text-secondary); font-size:14px; margin:0;">No diagnosis data available.</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-exclamation-circle"></i> Severity Distribution</h4>
+                    <div class="card-head">
+                        <h2><i class="fas fa-exclamation-circle me-2" style="color:var(--blue);"></i>Severity Distribution</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body-inner">
                         {% if severity_counts %}
                             <div class="table-responsive">
-                                <table class="table table-sm">
+                                <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Severity</th>
-                                            <th>Count</th>
-                                            <th>Percentage</th>
+                                            <th style="text-align:right;">Count</th>
+                                            <th style="text-align:right;">Share</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for severity, count in severity_counts.items() %}
                                         <tr>
                                             <td>
-                                                <span class="badge severity-{{ 'high' if severity == '10245' else 'medium' if severity == '10246' else 'low' }}">
+                                                <span class="badge-pill {{ 'badge-high' if severity == '10245' else 'badge-medium' if severity == '10246' else 'badge-low' }}">
                                                     {{ severity }}
                                                 </span>
                                             </td>
-                                            <td>{{ count }}</td>
-                                            <td>{{ "%.1f"|format(count / total_patients * 100) }}%</td>
+                                            <td style="text-align:right;">{{ count }}</td>
+                                            <td style="text-align:right; color:var(--text-secondary);">{{ "%.1f"|format(count / total_patients * 100) }}%</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
                         {% else %}
-                            <p class="text-muted">No severity data available.</p>
+                            <p style="padding:24px; color:var(--text-secondary); font-size:14px; margin:0;">No severity data available.</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Results Table -->
+        <!-- AI Insights (populated by chatbot) -->
+        <div id="ai-insights-section" style="display:none;" class="mb-4">
+            <p class="section-label">AI Insights</p>
+            <div class="ai-insights-card">
+                <div class="ai-insights-header">
+                    <div class="ai-insights-icon"><i class="fas fa-robot"></i></div>
+                    <h2 class="ai-insights-title">AI-Generated Summary</h2>
+                </div>
+                <div id="ai-insights-body" class="ai-insights-body"></div>
+            </div>
+        </div>
+
+        <!-- Detailed results -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4><i class="fas fa-table"></i> Detailed Results</h4>
-                <a href="{{ url_for('download_results') }}" class="btn btn-light btn-sm">
+            <div class="card-head">
+                <h2><i class="fas fa-table me-2" style="color:var(--blue);"></i>Detailed Results</h2>
+                <a href="{{ url_for('download_results') }}" class="btn-outline-apple">
                     <i class="fas fa-download"></i> Download CSV
                 </a>
             </div>
-            <div class="card-body">
+            <div class="card-body-inner">
                 {% if results %}
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Patient Email</th>
                                     <th>Diagnosis</th>
-                                    <th>ICD Code</th>
-                                    <th>CPT Code</th>
+                                    <th>ICD</th>
+                                    <th>CPT</th>
                                     <th>Prescription</th>
                                     <th>Eye</th>
                                     <th>Severity</th>
@@ -199,38 +697,28 @@
                             <tbody>
                                 {% for result in results %}
                                 <tr>
+                                    <td style="color:var(--text-secondary);">{{ result.patient_email }}</td>
                                     <td>
-                                        <small class="text-muted">{{ result.patient_email }}</small>
+                                        <span class="badge-pill badge-blue">{{ result.diagnosis }}</span>
+                                    </td>
+                                    <td><code>{{ result.icd_code }}</code></td>
+                                    <td><code>{{ result.cpt_code }}</code></td>
+                                    <td style="color:var(--text-secondary); font-size:12px;">{{ result.prescription }}</td>
+                                    <td>
+                                        <span class="badge-pill badge-teal">{{ result.Eye }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-primary diagnosis-badge">
-                                            {{ result.diagnosis }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <code>{{ result.icd_code }}</code>
-                                    </td>
-                                    <td>
-                                        <code>{{ result.cpt_code }}</code>
-                                    </td>
-                                    <td>
-                                        <small>{{ result.prescription }}</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">{{ result.Eye }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge severity-{{ 'high' if result.Severity == '10245' else 'medium' if result.Severity == '10246' else 'low' }}">
+                                        <span class="badge-pill {{ 'badge-high' if result.Severity == '10245' else 'badge-medium' if result.Severity == '10246' else 'badge-low' }}">
                                             {{ result.Severity }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-{{ 'success' if result.Diagnosis_status == 'Active' else 'warning' }}">
+                                        <span class="badge-pill {{ 'badge-active' if result.Diagnosis_status == 'Active' else 'badge-inactive' }}">
                                             {{ result.Diagnosis_status }}
                                         </span>
                                     </td>
-                                    <td>
-                                        <small class="text-muted">{{ result.Symptoms[:50] }}{{ '...' if result.Symptoms|length > 50 else '' }}</small>
+                                    <td style="color:var(--text-secondary); font-size:12px; max-width:200px;">
+                                        {{ result.Symptoms[:60] }}{{ '…' if result.Symptoms|length > 60 else '' }}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -238,19 +726,207 @@
                         </table>
                     </div>
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No results found</h5>
-                        <p class="text-muted">Please process some data first to see results here.</p>
-                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>No results yet</h5>
+                        <p>Process patient data first to see results here.</p>
+                        <a href="{{ url_for('index') }}" class="btn-primary-apple">
                             <i class="fas fa-arrow-left"></i> Back to Dashboard
                         </a>
                     </div>
                 {% endif %}
             </div>
         </div>
+
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbot-widget">
+        <!-- Chat panel (hidden by default) -->
+        <div class="chatbot-panel" id="chatbot-panel" style="display:none;">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+                    <div>
+                        <div class="chatbot-name">AI Assistant</div>
+                        <div class="chatbot-status">Powered by Flan-T5 · local model</div>
+                    </div>
+                </div>
+                <button class="chatbot-close-btn" onclick="toggleChatbot()" aria-label="Close chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chatbot-message bot-message">
+                    <div class="message-bubble">
+                        👋 Hello! I can help you interpret these diagnosis results.<br>
+                        Click <strong>Generate AI Summary</strong> for an overview, or ask me any question about the data.
+                        <br><br>
+                        <em style="font-size:11px; opacity:.7;">Note: the first response may take a moment while the AI model loads.</em>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chatbot-footer">
+                <button class="chatbot-summary-btn" id="summary-btn" onclick="generateSummary()">
+                    <i class="fas fa-magic"></i> Generate AI Summary
+                </button>
+                <div class="chatbot-input-area">
+                    <input type="text" id="chatbot-input" class="chatbot-input"
+                           placeholder="Ask about the results…"
+                           onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button class="chatbot-send-btn" id="chatbot-send" onclick="sendMessage()" aria-label="Send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle button -->
+        <button class="chatbot-toggle-btn" id="chatbot-toggle-btn"
+                onclick="toggleChatbot()" title="AI Assistant" aria-label="Toggle AI Assistant">
+            <i class="fas fa-robot" id="chatbot-btn-icon"></i>
+        </button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let chatOpen = false;
+
+        function toggleChatbot() {
+            chatOpen = !chatOpen;
+            const panel = document.getElementById('chatbot-panel');
+            const icon  = document.getElementById('chatbot-btn-icon');
+            if (chatOpen) {
+                panel.style.display = 'flex';
+                icon.className = 'fas fa-times';
+            } else {
+                panel.style.display = 'none';
+                icon.className = 'fas fa-robot';
+            }
+        }
+
+        function appendMessage(html, type) {
+            const messages = document.getElementById('chatbot-messages');
+            const wrap   = document.createElement('div');
+            wrap.className = 'chatbot-message ' + (type === 'user' ? 'user-message' : 'bot-message');
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = html;
+            wrap.appendChild(bubble);
+            messages.appendChild(wrap);
+            messages.scrollTop = messages.scrollHeight;
+            return wrap;
+        }
+
+        function showTyping() {
+            const messages = document.getElementById('chatbot-messages');
+            const wrap = document.createElement('div');
+            wrap.className = 'chatbot-message bot-message';
+            wrap.id = 'typing-indicator';
+            wrap.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+            messages.appendChild(wrap);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function removeTyping() {
+            const el = document.getElementById('typing-indicator');
+            if (el) el.remove();
+        }
+
+        function setDisabled(on) {
+            document.getElementById('chatbot-input').disabled = on;
+            document.getElementById('chatbot-send').disabled  = on;
+            document.getElementById('summary-btn').disabled   = on;
+        }
+
+        function showAIInsights(text) {
+            const section = document.getElementById('ai-insights-section');
+            const body    = document.getElementById('ai-insights-body');
+            body.textContent = text;
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showAIInsightsSkeleton() {
+            const section = document.getElementById('ai-insights-section');
+            const body    = document.getElementById('ai-insights-body');
+            body.innerHTML = '<div class="ai-skeleton"><div class="ai-skeleton-line"></div><div class="ai-skeleton-line"></div><div class="ai-skeleton-line"></div></div>';
+            section.style.display = 'block';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatbot-input');
+            const msg   = input.value.trim();
+            if (!msg) return;
+
+            input.value = '';
+            if (!chatOpen) toggleChatbot();
+            setDisabled(true);
+            appendMessage(escapeHTML(msg), 'user');
+            showTyping();
+
+            try {
+                const res  = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, context: 'results' })
+                });
+                const data = await res.json();
+                removeTyping();
+                if (data.error) {
+                    appendMessage('<span style="color:#c0392b">⚠ ' + escapeHTML(data.error) + '</span>', 'bot');
+                } else {
+                    appendMessage(escapeHTML(data.response), 'bot');
+                }
+            } catch (err) {
+                removeTyping();
+                appendMessage('<span style="color:#c0392b">⚠ Connection error. Please try again.</span>', 'bot');
+            } finally {
+                setDisabled(false);
+                input.focus();
+            }
+        }
+
+        async function generateSummary() {
+            if (!chatOpen) toggleChatbot();
+            setDisabled(true);
+            appendMessage('Generate a summary of the diagnosis results.', 'user');
+            showTyping();
+            showAIInsightsSkeleton();
+
+            try {
+                const res  = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'summarize', context: 'results' })
+                });
+                const data = await res.json();
+                removeTyping();
+                if (data.error) {
+                    appendMessage('<span style="color:#c0392b">⚠ ' + escapeHTML(data.error) + '</span>', 'bot');
+                    document.getElementById('ai-insights-section').style.display = 'none';
+                } else {
+                    appendMessage(escapeHTML(data.response), 'bot');
+                    showAIInsights(data.response);
+                }
+            } catch (err) {
+                removeTyping();
+                appendMessage('<span style="color:#c0392b">⚠ Connection error. Please try again.</span>', 'bot');
+                document.getElementById('ai-insights-section').style.display = 'none';
+            } finally {
+                setDisabled(false);
+            }
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
 </body>
 </html>

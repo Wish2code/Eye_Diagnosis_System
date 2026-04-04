@@ -1,13 +1,15 @@
 # Eye Diagnosis System
 
-A comprehensive web-based system for automated eye condition diagnosis using patient symptom data and ICD/CPT medical coding standards.
+A comprehensive web-based system for automated eye condition diagnosis using patient symptom data and ICD/CPT medical coding standards — now with an AI-powered chatbot assistant.
 
 ## Features
 
 - **CSV File Upload**: Upload patient data in CSV format for batch processing
-- **Advanced Symptom Matching**: Intelligent algorithm that matches patient symptoms to medical conditions
+- **Advanced Symptom Matching**: Intelligent algorithm that matches patient symptoms to medical conditions using Jaccard similarity
 - **ICD/CPT Code Generation**: Automatically generates appropriate medical codes for diagnoses
 - **Comprehensive Results**: Detailed diagnosis reports with prescriptions, severity levels, and treatment recommendations
+- **AI Chatbot Assistant**: Floating chatbot (bottom-right) that summarizes results and answers questions using a local `google/flan-t5-small` model — **no API key required**
+- **AI Insights Card**: After generating a summary, the AI response is also shown in a dedicated card on the results page for easy reading
 - **Modern UI**: Beautiful, responsive web interface with real-time statistics
 - **Data Export**: Download results in CSV format for further analysis
 - **Error Handling**: Robust validation and error checking for data integrity
@@ -28,8 +30,15 @@ cd Eye_Diagnosis_System
 
 2. Install required packages:
 ```bash
-pip install flask werkzeug tabulate
+pip install -r requirements.txt
 ```
+
+   > **Tip – CPU-only PyTorch (smaller download):**  
+   > If you do not have a GPU and want to save disk space, install PyTorch for CPU before the rest of the packages:
+   > ```bash
+   > pip install torch --index-url https://download.pytorch.org/whl/cpu
+   > pip install -r requirements.txt
+   > ```
 
 3. Ensure the ICD/CPT codes database file is present:
    - `icd_cpt_codes_extended.csv` should be in the root directory
@@ -50,12 +59,33 @@ python Diagnosis.py
    - The system will validate the file format and structure
 
 4. **Process the data**:
-   - Click "Process Data and Generate Results"
-   - The system will analyze symptoms and generate diagnoses
+   - Click "Run Diagnosis"
+   - The system will analyse symptoms and generate diagnoses
 
 5. **View results**:
    - View detailed results with statistics and charts
    - Download results as CSV for further analysis
+
+6. **Use the AI chatbot**:
+   - On the **Dashboard** (home page), click the robot icon to ask general questions about workflow, CSV format, and app usage
+   - After diagnosis is complete, use the **Results** page chatbot for dataset-specific questions
+   - Click **Generate AI Summary** on Results to receive a structured analysis with key findings and risk highlights
+   - The summary also appears in the **AI Insights** card at the top of the results page for easy reading
+   - Type follow-up questions in the text box (e.g. "How many high-severity patients?") and press Enter or click Send
+   - The chatbot uses `google/flan-t5-small`, which is downloaded automatically on first use (~300 MB) and cached locally; no internet connection or API key is needed for subsequent requests
+
+> **Note:** AI summary generation is intentionally restricted to post-diagnosis context on the Results page.
+
+## AI Chatbot Details
+
+| Property | Value |
+|---|---|
+| Model | `google/flan-t5-small` |
+| Framework | HuggingFace Transformers + PyTorch |
+| Inference | CPU (GPU supported automatically if available) |
+| API key required | **No** |
+| Internet required at runtime | No (model is cached after first download) |
+| First-load time | ~15–60 s depending on hardware |
 
 ## CSV File Format
 
@@ -112,13 +142,14 @@ The system generates the following information for each patient:
 
 ```
 Eye_Diagnosis_System/
-├── Diagnosis.py                 # Main Flask application
+├── Diagnosis.py                 # Main Flask application (includes chatbot route)
 ├── icd_cpt_codes_extended.csv   # ICD/CPT codes database
 ├── sample_patient_data.csv      # Example patient data
+├── requirements.txt             # Python dependencies
 ├── README.md                    # This file
 ├── templates/                   # HTML templates
-│   ├── index.html              # Main dashboard
-│   └── results.html            # Results display
+│   ├── index.html              # Main dashboard + general chatbot guidance
+│   └── results.html            # Results display + data-aware AI chatbot widget
 └── uploads/                    # Uploaded files and results
     └── diagnosis_results.csv   # Generated results
 ```
@@ -130,13 +161,14 @@ The system includes comprehensive error handling:
 - **File Validation**: Checks file format and structure
 - **Data Validation**: Ensures required fields are present
 - **Symptom Processing**: Handles missing or malformed symptom data
+- **AI Model Errors**: Graceful fallback messages if the model fails to load
 - **Logging**: Detailed logs for debugging and monitoring
 
 ## Security Features
 
 - **File Type Validation**: Only accepts CSV files
-- **Secure Filename Handling**: Uses secure_filename for uploaded files
-- **Input Sanitization**: Validates and cleans all input data
+- **Secure Filename Handling**: Uses `secure_filename` for uploaded files
+- **Input Sanitization**: Validates and cleans all input data; chatbot responses are HTML-escaped before rendering
 - **Error Messages**: User-friendly error messages without exposing system details
 
 ## Troubleshooting
@@ -146,6 +178,8 @@ The system includes comprehensive error handling:
 1. **"No symptom columns found"**: Ensure your CSV contains at least one symptom-related column
 2. **"Invalid file type"**: Make sure you're uploading a CSV file
 3. **"No results found"**: Check that your CSV data is properly formatted and contains valid symptoms
+4. **AI model error / missing packages**: Run `pip install transformers torch sentencepiece` (or use the CPU-only torch command above)
+5. **First AI response is slow**: The model is downloaded and loaded into memory on the first request; subsequent responses are much faster
 
 ### Logs:
 - Check the console output for detailed error messages
