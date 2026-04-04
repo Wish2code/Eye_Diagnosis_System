@@ -497,7 +497,7 @@ def chat():
     if any(w in lower_msg for w in ('summarize', 'summary', 'overview', 'report', 'brief')):
         prompt = (
             "You are a professional medical assistant. "
-            "Write a concise clinical summary of the following eye diagnosis results. "
+            "Write a moderately verbose but accurate clinical summary of the following eye diagnosis results. "
             "Include key findings, most common conditions, and severity overview. "
             f"Data: {context} "
             "Summary:"
